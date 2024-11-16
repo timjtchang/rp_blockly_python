@@ -10,7 +10,6 @@ RP Blockly Python is a sophisticated web-based visual programming environment th
 - Live log viewer for Python output
 - Custom block support for enhanced functionality
 - Ability to add custom Python libraries locally
-- Offline functionality
 - Responsive design for various screen sizes
 
 ## Prerequisites
