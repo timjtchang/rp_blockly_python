@@ -112,25 +112,3 @@ document.addEventListener("DOMContentLoaded", () => {
 // Add event listener for the run button
 runButton.addEventListener("click", (event) => handleCode(event, "run"));
 stopButton.addEventListener("click", (event) => handleCode(event, "stop"));
-
-// // Load the initial state from storage and update the code display
-// load(ws);
-// updateCode();
-
-// // Every time the workspace changes state, save the changes to storage.
-// ws.addChangeListener((e) => {
-//   if (e.isUiEvent) return;
-//   save(ws);
-// });
-
-// // Whenever the workspace changes meaningfully, update the code display.
-// ws.addChangeListener((e) => {
-//   if (
-//     e.isUiEvent ||
-//     e.type == Blockly.Events.FINISHED_LOADING ||
-//     ws.isDragging()
-//   ) {
-//     return;
-//   }
-//   updateCode();
-// });
