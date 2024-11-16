@@ -45,7 +45,8 @@ code {
   overflow: auto;
 }
 
-#runButton {
+#runButton,
+#stopButton {
   padding: 12px 20px;
   background-color: #4caf50;
   color: white;
@@ -57,14 +58,15 @@ code {
   transition: background-color 0.3s, transform 0.1s;
 }
 
-#runButton:hover {
+#runButton:hover,
+#stopButton:hover {
   background-color: #45a049;
 }
 
-#runButton:active {
+#runButton:active,
+#stopButton:active {
   transform: scale(0.98);
 }
-
 #output {
   flex: 1;
   background-color: #f0f0f0;

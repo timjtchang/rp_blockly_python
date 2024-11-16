@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Python Log Viewer</title>
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.2/socket.io.js"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f0f0f0;
+      }
+      #root {
+        max-width: 800px;
+        margin: 0 auto;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+      }
+      h1 {
+        color: #333;
+      }
+      #log-container {
+        background-color: #f8f8f8;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 10px;
+        height: 400px;
+        overflow-y: auto;
+        font-family: monospace;
+        white-space: pre-wrap;
+      }
+      .error {
+        color: red;
+      }
+      .output {
+        color: green;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+      const LogViewer = () => {
+        const [logs, setLogs] = React.useState([]);
+        const [stopTimestamp, setStopTimestamp] = React.useState(Infinity);
+        const logContainerRef = React.useRef(null);
+        React.useEffect(() => {
+          const socket = io("http://localhost:3000");
+
+          socket.on("logUpdate", ({ timestamp, message }) => {
+            if (timestamp <= stopTimestamp) {
+              setLogs((prevLogs) => [...prevLogs, { timestamp, message }]);
+            }
+          });
+
+          socket.on("clearLogs", () => {
+            setLogs([]);
+            setStopTimestamp(Infinity);
+          });
+
+          socket.on("stop", ({ stopTimestamp }) => {
+            setStopTimestamp(stopTimestamp);
+            if (logContainerRef.current) {
+              logContainerRef.current.scrollTop =
+                logContainerRef.current.scrollHeight;
+            }
+          });
+
+          return () => socket.disconnect();
+        }, [stopTimestamp]);
+
+        React.useEffect(() => {
+          if (logContainerRef.current) {
+            logContainerRef.current.scrollTop =
+              logContainerRef.current.scrollHeight;
+          }
+        }, [logs]);
+
+        return (
+          <div>
+            <h1>Python Log Viewer</h1>
+            <div id="log-container" ref={logContainerRef}>
+              {logs.length === 0 ? (
+                <div>Waiting for logs...</div>
+              ) : (
+                logs.map((log, index) => (
+                  <div key={index}>
+                    {`[${log.timestamp.toFixed(3)}ms] ${log.message}`}
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        );
+      };
+
+      ReactDOM.render(<LogViewer />, document.getElementById("root"));
+    </script>
+  </body>
+</html>

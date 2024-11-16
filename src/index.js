@@ -6,9 +6,6 @@ import { toolbox } from "./toolbox";
 import { io } from "socket.io-client";
 import "./index.css";
 
-// Set up WebSocket connection
-const socket = io("http://localhost:3000");
-
 // Register the blocks and generator with Blockly
 Blockly.common.defineBlocks(blocks);
 
@@ -17,6 +14,7 @@ const codeDiv = document.getElementById("generatedCode").firstChild;
 const outputDiv = document.getElementById("output");
 const blocklyDiv = document.getElementById("blocklyDiv");
 const runButton = document.getElementById("runButton");
+const stopButton = document.getElementById("stopButton");
 const ws = Blockly.inject(blocklyDiv, { toolbox });
 
 // This function updates the generated code display
@@ -25,31 +23,40 @@ const updateCode = () => {
   codeDiv.textContent = code;
 };
 
-function runCode() {
-  const code = pythonGenerator.workspaceToCode(ws);
-
-  console.log(code);
+function handleCode(event, action) {
+  let body = { action: action };
+  if (action === "run") {
+    const code = pythonGenerator.workspaceToCode(ws);
+    body.code = code;
+  }
 
   fetch("http://localhost:3000/save_code", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ code: code }),
+    body: JSON.stringify(body),
   })
     .then((response) => {
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
-      outputDiv.textContent = "Python code has been saved on the server.";
+      return response.json();
+    })
+    .then((data) => {
+      console.log("Server response:", data);
+      // outputDiv.textContent =
+      //   data.message || "Operation completed successfully.";
     })
     .catch((error) => {
-      outputDiv.textContent = "Error saving file: " + error.message;
+      console.error("Error:", error);
+      // outputDiv.textContent = "Error: " + error.message;
     });
 }
 
 // Add event listener for the run button
-runButton.addEventListener("click", runCode);
+runButton.addEventListener("click", (event) => handleCode(event, "run"));
+stopButton.addEventListener("click", (event) => handleCode(event, "stop"));
 
 // Load the initial state from storage and update the code display
 load(ws);
@@ -71,10 +78,4 @@ ws.addChangeListener((e) => {
     return;
   }
   updateCode();
-});
-
-// Listen for log updates from the server
-socket.on("logUpdate", (logContent) => {
-  // Append the new log content to the output div
-  outputDiv.textContent += logContent + "\n";
 });
