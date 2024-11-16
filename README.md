@@ -24,7 +24,7 @@ RP Blockly Python is a sophisticated web-based visual programming environment th
 1. Clone the repository:
 
 ```
-git clone https://github.com/your-username/rp_blockly_python.git
+git clone https://github.com/timjtchang/rp_blockly_python.git
 cd rp_blockly_python
 ```
 
