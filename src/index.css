@@ -121,3 +121,13 @@ code {
   color: #d32f2f;
   font-weight: bold;
 }
+#serverResponse {
+  margin-top: 10px;
+  min-height: 60px; /* Approximately 3 lines of text */
+  border: 1px solid #ccc;
+  padding: 5px;
+  background-color: #f9f9f9;
+  font-family: monospace;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}

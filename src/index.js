@@ -3,7 +3,6 @@ import { blocks } from "./blocks/text";
 import { pythonGenerator } from "./generators/python";
 import { save, load } from "./serialization";
 import { toolbox } from "./toolbox";
-import { io } from "socket.io-client";
 import "./index.css";
 
 // Register the blocks and generator with Blockly
@@ -11,7 +10,7 @@ Blockly.common.defineBlocks(blocks);
 
 // Set up UI elements and inject Blockly
 const codeDiv = document.getElementById("generatedCode").firstChild;
-const outputDiv = document.getElementById("output");
+const serverResponse = document.getElementById("serverResponse");
 const blocklyDiv = document.getElementById("blocklyDiv");
 const runButton = document.getElementById("runButton");
 const stopButton = document.getElementById("stopButton");
@@ -45,14 +44,42 @@ function handleCode(event, action) {
     })
     .then((data) => {
       console.log("Server response:", data);
-      // outputDiv.textContent =
-      //   data.message || "Operation completed successfully.";
+      serverResponse.textContent = JSON.stringify(data, null, 2);
     })
     .catch((error) => {
       console.error("Error:", error);
-      // outputDiv.textContent = "Error: " + error.message;
+      serverResponse.textContent = "Error: " + error.message;
     });
 }
+
+// Function to check server reachability
+function checkServerReachability() {
+  fetch("http://localhost:3000/", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({}), // Empty object as body
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log("Server is reachable. Response:", data);
+      serverResponse.textContent =
+        "Server is reachable: " + JSON.stringify(data, null, 2);
+    })
+    .catch((error) => {
+      console.error("Server is not reachable:", error);
+      serverResponse.textContent = "Server is not reachable: " + error.message;
+    });
+}
+
+// Call the function when the page loads
+document.addEventListener("DOMContentLoaded", checkServerReachability);
 
 // Add event listener for the run button
 runButton.addEventListener("click", (event) => handleCode(event, "run"));

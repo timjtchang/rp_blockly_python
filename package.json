@@ -25,11 +25,14 @@
     "webpack-dev-server": "^4.11.1"
   },
   "dependencies": {
+    "@babel/standalone": "^7.26.2",
     "blockly": "^11.1.1",
     "cors": "^2.8.5",
     "cros": "^1.0.1",
     "fs": "^0.0.1-security",
     "pyodide": "^0.26.3",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
     "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.1"
   }

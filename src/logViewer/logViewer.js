@@ -62,11 +62,7 @@ const LogViewer = () => {
         {logs.length === 0 ? (
           <div>Waiting for logs...</div>
         ) : (
-          logs.map((log, index) => (
-            <div key={index}>
-              {`[${log.timestamp.toFixed(3)}ms] ${log.message}`}
-            </div>
-          ))
+          logs.map((log, index) => <div key={index}>{`${log.message}`}</div>)
         )}
       </div>
     </div>
