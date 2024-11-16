@@ -16,7 +16,7 @@ const io = socketIo(server);
 const currentDir = __dirname;
 
 // Calculate the paths relative to saveCode.js location
-const PATH = path.join(currentDir, "..", "..", "generatedCode");
+const PATH = path.join(currentDir, "..", "..", "/generatedCode/");
 const VENVPATH = path.join(currentDir, "..", "..", "myenv", "bin", "python3");
 
 const PORT = 3000;
@@ -64,6 +64,7 @@ app.post("/", (req, res) => res.json("Connected to viewer"));
 app.post("/save_code", async (req, res) => {
   const { action, code } = req.body;
   const filePath = `${PATH}${FILENAME}`;
+  console.log(filePath);
 
   try {
     if (action === "run") {
