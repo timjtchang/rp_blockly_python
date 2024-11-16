@@ -6,14 +6,20 @@ const cors = require("cors");
 const http = require("http");
 const socketIo = require("socket.io");
 const { performance } = require("perf_hooks");
+const path = require("path");
 
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
+// Get the directory where saveCode.js is located
+const currentDir = __dirname;
+
+// Calculate the paths relative to saveCode.js location
+const PATH = path.join(currentDir, "..", "..", "generatedCode");
+const VENVPATH = path.join(currentDir, "..", "..", "myenv", "bin", "python3");
+
 const PORT = 3000;
-const PATH = "../../generatedCode/";
-const VENVPATH = "../../myenv/bin/python3";
 const FILENAME = "python_code.py";
 
 let currentProcess = null;

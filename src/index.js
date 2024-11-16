@@ -78,31 +78,59 @@ function checkServerReachability() {
     });
 }
 
+function initBlockly() {
+  // Load the initial state from storage and update the code display
+  load(ws);
+  updateCode();
+
+  // Add event listeners to workspace
+  ws.addChangeListener((e) => {
+    if (e.isUiEvent) return;
+    save(ws);
+  });
+
+  ws.addChangeListener((e) => {
+    if (
+      e.isUiEvent ||
+      e.type == Blockly.Events.FINISHED_LOADING ||
+      ws.isDragging()
+    ) {
+      return;
+    }
+    updateCode();
+  });
+}
+
 // Call the function when the page loads
-document.addEventListener("DOMContentLoaded", checkServerReachability);
+document.addEventListener("DOMContentLoaded", () => {
+  setTimeout(() => {
+    initBlockly();
+    checkServerReachability();
+  }, 100); // 100ms delay
+});
 
 // Add event listener for the run button
 runButton.addEventListener("click", (event) => handleCode(event, "run"));
 stopButton.addEventListener("click", (event) => handleCode(event, "stop"));
 
-// Load the initial state from storage and update the code display
-load(ws);
-updateCode();
+// // Load the initial state from storage and update the code display
+// load(ws);
+// updateCode();
 
-// Every time the workspace changes state, save the changes to storage.
-ws.addChangeListener((e) => {
-  if (e.isUiEvent) return;
-  save(ws);
-});
+// // Every time the workspace changes state, save the changes to storage.
+// ws.addChangeListener((e) => {
+//   if (e.isUiEvent) return;
+//   save(ws);
+// });
 
-// Whenever the workspace changes meaningfully, update the code display.
-ws.addChangeListener((e) => {
-  if (
-    e.isUiEvent ||
-    e.type == Blockly.Events.FINISHED_LOADING ||
-    ws.isDragging()
-  ) {
-    return;
-  }
-  updateCode();
-});
+// // Whenever the workspace changes meaningfully, update the code display.
+// ws.addChangeListener((e) => {
+//   if (
+//     e.isUiEvent ||
+//     e.type == Blockly.Events.FINISHED_LOADING ||
+//     ws.isDragging()
+//   ) {
+//     return;
+//   }
+//   updateCode();
+// });
